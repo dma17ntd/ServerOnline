@@ -412,7 +412,7 @@ if __name__ == "__main__":
     LinuxLogoGlitchV3(
         fps=60,
         glitch_duration=1.5,
-        palette_speed=5.5,
+        palette_speed=3.5,
         palette_min_interval=0.9,
         palette_max_interval=1.5,
     ).run()
