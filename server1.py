@@ -411,8 +411,8 @@ class LinuxLogoGlitchV3:
 if __name__ == "__main__":
     LinuxLogoGlitchV3(
         fps=60,
-        glitch_duration=3.0,
-        palette_speed=1.5,
+        glitch_duration=1.5,
+        palette_speed=5.5,
         palette_min_interval=2.0,
         palette_max_interval=4.5,
     ).run()
