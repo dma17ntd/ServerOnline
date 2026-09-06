@@ -17,16 +17,6 @@ from rich.text import Text
 
 
 class LinuxLogoGlitchV3:
-    """
-    Phiên bản nâng cấp (Pure RGB):
-    - Loại bỏ hoàn toàn hex, dùng thuần RGB (tuple và Color.from_rgb)
-    - Hiệu ứng glitch mượt, dừng ngay khi hết nhiễu
-    - Màu sắc random, tự đổi palette liên tục
-    - Gradient liên kết từ đầu đến cuối logo
-    - Chữ "Linux by Nguyễn Tấn Dũng" có nền xám, in nghiêng
-    - Khung bo góc bằng rich
-    """
-
     PHRASE = "Linux by Nguyễn Tấn Dũng"
 
     LOGO_LINES = [
