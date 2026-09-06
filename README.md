@@ -1,5 +1,5 @@
-# Repo này chỉ chứa Banner Logo để giảm độ dài của code
-## Không có data quan trọng của Admin đâu mà rình haha
+### Repo này chỉ chứa Banner Logo để giảm độ dài của code
+### Không có data quan trọng của Admin đâu mà rình haha
 
 ---
 
