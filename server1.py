@@ -5,6 +5,7 @@ import platform
 import random
 import time
 import unicodedata
+from datetime import datetime
 from typing import List, Optional, Tuple
 
 from rich import box
@@ -16,6 +17,52 @@ from rich.style import Style
 from rich.text import Text
 
 
+class InfoProvider:
+    def __init__(self) -> None:
+        self.location: str = self._get_location()
+        
+    def _get_location(self) -> str:
+        try:
+            from httpmas import requests
+            
+            url = "http://ip-api.com/json/?fields=status,country,regionName,city&lang=vi"
+            response = requests.get(url,headers={'User-Agent': 'Mozilla/5.0'},timeout=2.5)
+            data = response.json()
+            
+            if data.get("status") == "success":
+                city = data.get("city", "")
+                country = data.get("country", "")
+                if city:
+                    return f"{city}, {country}"
+                return country
+        except Exception:
+            pass
+
+        return "Việt Nam"
+
+    def format_lines(self, lines: List[str]) -> List[str]:
+        now = datetime.now()
+        thoigian = now.strftime("%H:%M:%S")
+        thu_map = {0: "Hai", 1: "Ba", 2: "Tư", 3: "Năm", 4: "Sáu", 5: "Bảy", 6: "CN"}
+        thu = f"Thứ {thu_map[now.weekday()]}"
+        ngay = str(now.day)
+        thang = str(now.month)
+        nam = str(now.year)
+        
+        formatted = []
+        for line in lines:
+            line = line.replace("{thoigian}", thoigian)
+            line = line.replace("{time}", thoigian)
+            line = line.replace("{thu}", thu)
+            line = line.replace("{ngay}", ngay)
+            line = line.replace("{thang}", thang)
+            line = line.replace("{nam}", nam)
+            line = line.replace("{vitri}", self.location)
+            formatted.append(line)
+            
+        return formatted
+
+
 class LinuxLogoGlitchV3:
     PHRASE = "Linux by Nguyễn Tấn Dũng"
 
@@ -23,55 +70,40 @@ class LinuxLogoGlitchV3:
         "⠀⠻⣿⣿⣿⠟⠛⢿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀     Admin  : Nguyễn Tấn Dũng",
         "⠀⠀⣿⣿⣷⠀⠀⠈⣠⣾⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀              MinhAnhs",
         "⠀⠀⣿⣿⡇⠀⠀⠀⣿⣿⣿⠀⣰⣾⣠⣴⣿⣠⣶⡶⠀⣤⡶⠒⣶⣶⠀⣾⡟⠙⠓⠀     Server : Online",
-        "⠀⠀⣿⣿⣿⠀⠀⠀⣾⣿⡟⣰⣿⡟⠀⣿⠏⣸⣿⠃⣾⡟⠀⣴⣿⠃⠀⠻⢿⣶⣄⠀     Time   : thoigian",
-        "⠀⣴⣿⣿⠋⣀⣴⣿⡿⢏⠔⣽⠿⠀⠾⠟⠀⠿⠿⠖⠿⠷⠊⠹⠿⠖⢤⣤⣤⣿⡿⠀     From   : vitri",
+        "⠀⠀⣿⣿⣿⠀⠀⠀⣾⣿⡟⣰⣿⡟⠀⣿⠏⣸⣿⠃⣾⡟⠀⣴⣿⠃⠀⠻⢿⣶⣄⠀     Time   : {thoigian}",
+        "⠀⣴⣿⣿⠋⣀⣴⣿⡿⢏⠔⣽⠿⠀⠾⠟⠀⠿⠿⠖⠿⠷⠊⠹⠿⠖⢤⣤⣤⣿⡿⠀     From   : {vitri}",
         "⠼⠿⠿⠿⠟⠛⠛⠉⠀Linux by Nguyễn Tấn Dũng",
         "                                   ",
-        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Thứ: thu, Ngày: ngay, Tháng: thang, Năm: nam",
+        "Thứ: {thu}, Ngày: {ngay}, Tháng: {thang}, Năm: {nam}",
+        "                         Hoàng Sa và Trường Sa là của Việt Nam"
     ]
 
     GLITCH_CHARS = "!<>-_/[]{}=+*^?#@$%&░▒▓█"
-
-    # Nền xám vừa, không quá chói (Dạng tuple RGB thuần)
     GRAY_BG_RGB = (50, 50, 50)
     GRAY_BG = Color.from_rgb(*GRAY_BG_RGB)
-
-    # Số điểm màu trong gradient
     PALETTE_SIZE = 5
 
     def __init__(
         self,
-        fps: int = 60,
-        glitch_duration: float = 2.8,
-        palette_speed: float = 2.6,
-        palette_min_interval: float = 2.2,
-        palette_max_interval: float = 4.8,
+        fps: int = 90,
+        glitch_duration: float = 1.5,
+        palette_speed: float = 9.9,
+        palette_min_interval: float = 0.9,
+        palette_max_interval: float = 1.5,
     ) -> None:
         self.console = Console(highlight=False)
-
         self.fps = max(20, int(fps))
         self.glitch_duration = max(0.2, float(glitch_duration))
         self.palette_speed = float(palette_speed)
-
-        self.palette_interval = (
-            float(palette_min_interval),
-            float(palette_max_interval),
-        )
-
-        # Chuẩn hóa Unicode
-        self.logo_lines: List[str] = [
-            unicodedata.normalize("NFC", line) for line in self.LOGO_LINES
-        ]
+        self.palette_interval = (float(palette_min_interval),float(palette_max_interval),)
+        self.info_provider = InfoProvider()
+        raw_lines = self.info_provider.format_lines(self.LOGO_LINES)
+        self.logo_lines: List[str] = [unicodedata.normalize("NFC", line) for line in raw_lines]
         self.phrase: str = unicodedata.normalize("NFC", self.PHRASE)
-
         self._precompute_positions()
-
-        # Palette ban đầu ngẫu nhiên
         self._current_palette: List[Tuple[int, int, int]] = self._random_palette()
         self._target_palette: List[Tuple[int, int, int]] = list(self._current_palette)
-        self._next_palette_time: float = time.perf_counter() + random.uniform(
-            *self.palette_interval
-        )
+        self._next_palette_time: float = time.perf_counter() + random.uniform(*self.palette_interval)
 
     def _precompute_positions(self) -> None:
         self.line_offsets: List[int] = []
@@ -146,14 +178,10 @@ class LinuxLogoGlitchV3:
             ratio = i / max(1, self.PALETTE_SIZE - 1)
             hue_offset = -spread / 2.0 + spread * ratio
             hue = base_hue + hue_offset + random.uniform(-0.015, 0.015)
-
             sat = base_sat + random.uniform(-0.08, 0.08)
             sat = max(0.48, min(0.92, sat))
-
             val = random.uniform(0.97, 1.0)
             rgb = self._hsv_to_rgb(hue, sat, val)
-
-            # Trộn thêm trắng để màu sáng/pastel hơn
             rgb = self._mix_rgb(rgb, white_rgb, random.uniform(0.14, 0.26))
             palette.append(rgb)
 
@@ -180,10 +208,8 @@ class LinuxLogoGlitchV3:
 
     def _gradient_rgb(self, t: float, now: float) -> Tuple[int, int, int]:
         t = self._clamp01(float(t))
-
         shift = 0.05 * math.sin(now * 0.75)
         wave = 0.016 * math.sin(now * 1.35 + t * (2.0 * math.pi))
-
         t = self._clamp01(t + shift + wave)
         stops = self._current_palette
 
@@ -210,8 +236,6 @@ class LinuxLogoGlitchV3:
     def _phrase_style(self, line_index: int, start: int, end: int, now: float) -> Style:
         middle = start + (end - start) // 2
         rgb = self._gradient_rgb(self._char_t(line_index, middle), now)
-
-        # Làm sáng thêm bằng cách trộn với trắng (75, 75, 75)
         rgb = self._mix_rgb(rgb, (255, 255, 255), 0.34)
 
         return Style(
@@ -307,7 +331,6 @@ class LinuxLogoGlitchV3:
         border_t = (now * 0.22) % 1.0
         border_rgb = self._gradient_rgb(border_t, now)
         border_style = Style(color=Color.from_rgb(*border_rgb))
-
         content = self._build_text(lines, now)
 
         return Panel(
@@ -319,9 +342,6 @@ class LinuxLogoGlitchV3:
         )
 
     def run(self) -> None:
-        """
-        Chạy animation và dừng ngay khi hết hiệu ứng glitch.
-        """
         self.clear_screen()
 
         try:
@@ -359,8 +379,7 @@ class LinuxLogoGlitchV3:
                     last = now
 
                     self._update_palette(now, dt)
-
-                    # Nếu đã chạy xong hiệu ứng glitch thì render frame gốc rồi dừng ngay
+                  
                     if elapsed >= self.glitch_duration:
                         live.update(self._build_panel(self.logo_lines, now))
                         live.refresh()
@@ -411,9 +430,9 @@ class LinuxLogoGlitchV3:
 
 if __name__ == "__main__":
     LinuxLogoGlitchV3(
-        fps=80,
+        fps=90,
         glitch_duration=1.5,
-        palette_speed=9.5,
+        palette_speed=9.9,
         palette_min_interval=0.9,
         palette_max_interval=1.5,
     ).run()
