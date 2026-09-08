@@ -26,7 +26,8 @@ class LinuxLogoGlitchV3:
         "⠀⠀⣿⣿⣿⠀⠀⠀⣾⣿⡟⣰⣿⡟⠀⣿⠏⣸⣿⠃⣾⡟⠀⣴⣿⠃⠀⠻⢿⣶⣄⠀     Time   : thoigian",
         "⠀⣴⣿⣿⠋⣀⣴⣿⡿⢏⠔⣽⠿⠀⠾⠟⠀⠿⠿⠖⠿⠷⠊⠹⠿⠖⢤⣤⣤⣿⡿⠀     From   : vitri",
         "⠼⠿⠿⠿⠟⠛⠛⠉⠀Linux by Nguyễn Tấn Dũng",
-        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Thứ: thu, Ngày: ngay, Tháng: thang, Năm: nam",
+        "                                   ",
+        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Thứ: thu, Ngày: ngay, Tháng: thang, Năm: nam",
     ]
 
     GLITCH_CHARS = "!<>-_/[]{}=+*^?#@$%&░▒▓█"
